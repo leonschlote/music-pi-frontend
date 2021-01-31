@@ -1,17 +1,20 @@
 body {
   background: #000;
   display: grid;
-  grid-template-rows: repeat(4, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   margin: 5px;
   grid-gap: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, sans-serif;
 }
 
 .active_source {
-  background: white;
+  background: #666 linear-gradient(rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0.8));
+  background-size: cover !important;
   padding: 5px;
   grid-column: span 4;
   grid-row: span 4;
   border-radius: 10px;
+  color: #eee;
 }
 .active_source::before {
   content: "";
@@ -20,8 +23,38 @@ body {
   vertical-align: top;
 }
 
+.active_source .meta {
+	  position: absolute;
+	    font-size: 4vw;
+	      margin-left: 0.5em;
+	        margin-top: -5em;
+		  width: 20em;
+	  }
+	  .active_source .source_name {
+		    opacity: 0.6;
+		      font-size: 0.8em;
+		        font-weight: 600;
+			  overflow: hidden;
+			    text-overflow: ellipsis;
+			      white-space: nowrap;
+		      }
+		      .active_source .title {
+			        font-size: 2em;
+				  overflow: hidden;
+				    text-overflow: ellipsis;
+				      white-space: nowrap;
+			      }
+			      .active_source .detail {
+				        opacity: 0.8;
+					  overflow: hidden;
+					    text-overflow: ellipsis;
+					      white-space: nowrap;
+					        font-weight: 300;
+					}
+
 .source_container {
   background: white;
+  background-size: cover !important;
   border-radius: 10px;
 }
 .source_container::before {
@@ -29,4 +62,42 @@ body {
   padding-bottom: 100%;
   display: inline-block;
   vertical-align: top;
+}
+
+@media(min-width: 600px){
+  body{
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .active_source .meta {
+    width: 17em;
+  }
+}
+
+@media(min-width: 800px){
+  body{
+    grid-template-columns: repeat(8, 1fr);
+  }
+
+  .active_source .meta {
+    font-size: 2vw;
+    //width: 12em;
+  }
+}
+
+@media(min-width: 1000px){
+  body{
+    grid-template-columns: repeat(10, 1fr);
+  }
+
+  .active_source .meta {
+    font-size: 14pt;
+  }
+}
+
+@media(min-width: 1200px){
+  body{
+	  width: 1200px;
+	  margin: 10px auto;
+  }
 }

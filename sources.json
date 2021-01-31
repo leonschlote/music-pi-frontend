@@ -1,12 +1,20 @@
-[
-	{
+{
+	"radio1":{
 		"name": "radioeins",
-		"id":"radio1",
-		"service":"radio1.service"
+		"service":"radio1.service",
+		"info": {
+			"source_name": "Radio",
+			"title": "Radioeins",
+			"detail": ""
+		}
 },
-	{
+	"airplay":{
 		"name": "Airplay",
-		"id":"airplay",
-		"service":"shairport-sync.service"
+		"service":"shairport-sync.service",
+		"info": {
+			"source_name": "Airplay",
+			"title": "Titel",
+			"detail": "Interpret - Album"
+		}
 }
-]
+}
