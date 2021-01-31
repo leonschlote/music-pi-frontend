@@ -7,7 +7,16 @@
 			"title": "Radioeins",
 			"detail": ""
 		}
-},
+	},
+	"fritz":{
+		"name": "fritz",
+		"service":"fritz.service",
+		"info": {
+			"source_name": "Radio",
+			"title": "Fritz",
+			"detail": ""
+		}
+	},
 	"airplay":{
 		"name": "Airplay",
 		"service":"shairport-sync.service",
@@ -16,5 +25,5 @@
 			"title": "Titel",
 			"detail": "Interpret - Album"
 		}
-}
+	}
 }

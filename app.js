@@ -45,6 +45,7 @@ io.on('connection', (socket)=>{
 	socket.on('change_source', (id)=>{
 		enable_source(id)
       })
+	enable_source(active_source)
 })
 
 var update_info_interval = setInterval(()=>{
@@ -64,13 +65,14 @@ function enable_source(id){
 		active_source = id
 		for(loop_id in available_sources){
 			let source = available_sources[id]
-			console.log(source)
 			if (loop_id != id){
 				console.log("Stopping -> " + available_sources[loop_id].service)
 				exec('systemctl stop ' + available_sources[loop_id].service)
 		        }
 	      }
               exec('systemctl start ' + available_sources[id].service)
+		console.log("Starting -> " + available_sources[id].service)
+		set_active_image(id+'.png')
 
 	}
 }
@@ -103,10 +105,18 @@ pipeReader.on('meta', (data)=>{
 		available_sources['airplay'].info.detail = data.asar + ' - ' + data.minm
 })
 
+var last_img_id = ''
+
 pipeReader.on('PICT', (data)=>{
 
+	try{
+	fs.unlinkSync(__dirname+'/static/img/airplay_album_art_' + last_img_id + '.png')
+	}catch(e){}
+
 	var nocache = makeid(5) 
+	last_img_id = nocache
 	airplay_album_art = data
+
 
 	fs.writeFileSync('static/img/airplay_album_art_' + nocache + '.png', data);
 
@@ -119,3 +129,20 @@ pipeReader.on('PICT', (data)=>{
 	console.log(app._router.stack)
 })
 
+
+// ============== Radio update metadata =================
+setInterval(()=>{
+	exec('mpc',(error, stdout, stderr)=>{
+		radio_info = stdout.split('\n')[0]
+		if(active_source == 'radio1'){
+			available_sources[active_source].info.title = radio_info.substr(0,9)  
+			available_sources[active_source].info.detail = radio_info.substr(11)  
+		}else{
+			available_sources[active_source].info.detail = radio_info  
+		}
+	})
+},2000)
+
+
+
+enable_source('radio1')
