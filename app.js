@@ -126,7 +126,7 @@ pipeReader.on('PICT', (data)=>{
 	})
 
 	set_active_image('airplay_album_art_' + nocache + '.png')
-	console.log(app._router.stack)
+	//console.log(app._router.stack)
 })
 
 
@@ -137,7 +137,7 @@ setInterval(()=>{
 		if(active_source == 'radio1'){
 			available_sources[active_source].info.title = radio_info.substr(0,9)  
 			available_sources[active_source].info.detail = radio_info.substr(11)  
-		}else{
+		}else if(active_source == 'fritz'){
 			available_sources[active_source].info.detail = radio_info  
 		}
 	})
