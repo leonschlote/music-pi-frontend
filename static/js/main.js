@@ -17,7 +17,7 @@ socket.on('update_active', (info)=>{
 	      })
 
 socket.on('update_album_art', (src)=>{
-	src = '/static/img/'+src
+	src = '/static/'+src
 	console.log(src)
 	$('.active_source').css('background',"linear-gradient(rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.7)), url('" + src + "')")
 })

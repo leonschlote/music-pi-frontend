@@ -2,6 +2,7 @@
 	"radio1":{
 		"name": "radioeins",
 		"service":"radio1.service",
+		"image":"img/radio1.png",
 		"info": {
 			"source_name": "Radio",
 			"title": "Radioeins",
@@ -11,6 +12,7 @@
 	"fritz":{
 		"name": "fritz",
 		"service":"fritz.service",
+		"image":"img/fritz.png",
 		"info": {
 			"source_name": "Radio",
 			"title": "Fritz",
@@ -20,6 +22,7 @@
 	"airplay":{
 		"name": "Airplay",
 		"service":"shairport-sync.service",
+		"image":"img/empty_album_art.png",
 		"info": {
 			"source_name": "Airplay",
 			"title": "Titel",
