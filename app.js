@@ -95,41 +95,51 @@ function makeid(length) {
 	   var charactersLength = characters.length;
 	   for ( var i = 0; i < length; i++ ) {
 		         result += characters.charAt(Math.floor(Math.random() * charactersLength));
-		      }
-	   return result;
+	}
+	return result;
+}
+
+try{
+	enable_source(fs.readFileSync('/var/tmp/active_audio_source').toString())
+}catch(e){
+	enable_source('airplay')
+	enable_source('radio1')
+	//setTimeout(()=>{enable_source('radio1')}, 2000)
 }
 
 // =========== Shairport update metadata ============
-const ShairportReader = require('shairport-sync-reader')
-var shairport_meta_path = '/var/tmp/shairport-sync-metadata'
-fs.writeFileSync( shairport_meta_path, '' ) 
-var pipeReader = new ShairportReader({ path: shairport_meta_path })
-var airplay_album_art = '';
+	const ShairportReader = require('shairport-sync-reader')
+	var shairport_meta_path = '/var/tmp/shairport-sync-metadata'
+	fs.writeFileSync( shairport_meta_path, '' ) 
+	fs.chmodSync( shairport_meta_path, 0o777 )
+	var pipeReader = new ShairportReader({ path: shairport_meta_path })
 
-pipeReader.on('meta', (data)=>{
-	//console.log(data)
-	if(data.asal != "" && data.asal != undefined)
-		available_sources['airplay'].info.title = data.asal
-	if(data.asar != "" && data.asar != undefined && data.minm != "" && data.minm != undefined)
-		available_sources['airplay'].info.detail = data.asar + ' - ' + data.minm
-})
-
-var last_img_id = ''
-
-pipeReader.on('PICT', (data)=>{
-
-	try{
-		fs.unlinkSync('/var/tmp/www/static/img/airplay_album_art_' + last_img_id + '.png')
-	}catch(e){}
-
-	var nocache = makeid(5) 
-	last_img_id = nocache
-	airplay_album_art = data
-
-	fs.writeFileSync('/var/tmp/www/static/img/airplay_album_art_' + nocache + '.png', data)
-
-	set_active_image('albumart/airplay_album_art_' + nocache + '.png')
-})
+	var airplay_album_art = '';
+	airplay_meta_active = true
+	
+	pipeReader.on('meta', (data)=>{
+		if(data.asal != "" && data.asal != undefined)
+			available_sources['airplay'].info.title = data.asal
+		if(data.asar != "" && data.asar != undefined && data.minm != "" && data.minm != undefined)
+			available_sources['airplay'].info.detail = data.asar + ' - ' + data.minm
+	})
+	
+	var last_img_id = ''
+	
+	pipeReader.on('PICT', (data)=>{
+	
+		try{
+			fs.unlinkSync('/var/tmp/www/static/img/airplay_album_art_' + last_img_id + '.png')
+		}catch(e){}
+	
+		var nocache = makeid(5) 
+		last_img_id = nocache
+		airplay_album_art = data
+	
+		fs.writeFileSync('/var/tmp/www/static/img/airplay_album_art_' + nocache + '.png', data)
+	
+		set_active_image('albumart/airplay_album_art_' + nocache + '.png')
+	})
 
 
 // ============== Radio update metadata =================
@@ -145,9 +155,4 @@ setInterval(()=>{
 	})
 },2000)
 
-try{
-	enable_source(fs.readFileSync('/var/tmp/active_audio_source').toString())
-}catch(e){
-	enable_source('radio1')
-}
 
