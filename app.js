@@ -25,13 +25,13 @@ for (id in available_sources){
 	sources_html += "<a class=\"source_container\" href=\"javascript:change_source('" + id + "')\" style=\"background-image: url('/static/img/"+id+".png'\"></a>"
 }
 
-fs.mkdirSync('/tmp/www/static/img', {recursive: true})
+fs.mkdirSync('/var/tmp/www/static/img', {recursive: true})
 
 var website = fs.readFileSync(__dirname + '/static/html/index.html').toString().replace('<$sources_list$/>',sources_html)
 
 app.use('/static/css', express.static(__dirname+'/static/css'))
 app.use('/static/img', express.static(__dirname+'/static/img'))
-app.use('/static/albumart', express.static('/tmp/www/static/img'))
+app.use('/static/albumart', express.static('/var/tmp/www/static/img'))
 app.use('/static/js', express.static(__dirname+'/static/js'))
 
 
@@ -47,7 +47,8 @@ io.on('connection', (socket)=>{
 	socket.on('change_source', (id)=>{
 		enable_source(id)
       })
-	enable_source(active_source)
+	socket.emit('update_info',available_sources[active_source].info)
+	socket.emit('update_album_art', active_image)
 })
 
 var update_info_interval = setInterval(()=>{
@@ -62,11 +63,6 @@ server.listen(httpPort, ()=>{
 
 function enable_source(id){
 	console.log('Enabling Audio Source -> ' + id)
-	if(id != active_source){
-		set_active_image(available_sources[id].image)
-	}else{
-		set_active_image(active_image)
-	}
 
 	if(available_sources[id] !== undefined){
 		active_source = id
@@ -79,14 +75,15 @@ function enable_source(id){
 	      }
               exec('systemctl start ' + available_sources[id].service)
 		console.log("Starting -> " + available_sources[id].service)
-		//set_active_image('img/' + id + '.png')
 
-		fs.writeFileSync('/tmp/active_audio_source', id);
+		set_active_image(available_sources[id].image)
+		io.emit('update_info',available_sources[id].info)
+
+		fs.writeFileSync('/var/tmp/active_audio_source', id);
 	}
 }
 
 function set_active_image(src){
-	console.log('New Image is -> '+ src + ', old image was -> ' + active_image)
 	active_image = src
 	io.emit('update_album_art', src)
 }
@@ -104,7 +101,9 @@ function makeid(length) {
 
 // =========== Shairport update metadata ============
 const ShairportReader = require('shairport-sync-reader')
-var pipeReader = new ShairportReader({ path: '/tmp/shairport-sync-metadata' });
+var shairport_meta_path = '/var/tmp/shairport-sync-metadata'
+fs.writeFileSync( shairport_meta_path, '' ) 
+var pipeReader = new ShairportReader({ path: shairport_meta_path })
 var airplay_album_art = '';
 
 pipeReader.on('meta', (data)=>{
@@ -120,14 +119,14 @@ var last_img_id = ''
 pipeReader.on('PICT', (data)=>{
 
 	try{
-		fs.unlinkSync('/tmp/www/static/img/airplay_album_art_' + last_img_id + '.png')
+		fs.unlinkSync('/var/tmp/www/static/img/airplay_album_art_' + last_img_id + '.png')
 	}catch(e){}
 
 	var nocache = makeid(5) 
 	last_img_id = nocache
 	airplay_album_art = data
 
-	fs.writeFileSync('/tmp/www/static/img/airplay_album_art_' + nocache + '.png', data)
+	fs.writeFileSync('/var/tmp/www/static/img/airplay_album_art_' + nocache + '.png', data)
 
 	set_active_image('albumart/airplay_album_art_' + nocache + '.png')
 })
@@ -147,7 +146,7 @@ setInterval(()=>{
 },2000)
 
 try{
-	enable_source(fs.readFileSync('/tmp/active_audio_source').toString())
+	enable_source(fs.readFileSync('/var/tmp/active_audio_source').toString())
 }catch(e){
 	enable_source('radio1')
 }
