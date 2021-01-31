@@ -1,0 +1,12 @@
+[
+	{
+		"name": "radioeins",
+		"id":"radio1",
+		"service":"radio1.service"
+},
+	{
+		"name": "Airplay",
+		"id":"airplay",
+		"service":"shairport-sync.service"
+}
+]

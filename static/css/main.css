@@ -1,0 +1,32 @@
+body {
+  background: #000;
+  display: grid;
+  grid-template-rows: repeat(4, 1fr);
+  margin: 5px;
+  grid-gap: 10px;
+}
+
+.active_source {
+  background: white;
+  padding: 5px;
+  grid-column: span 4;
+  grid-row: span 4;
+  border-radius: 10px;
+}
+.active_source::before {
+  content: "";
+  padding-bottom: 100%;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.source_container {
+  background: white;
+  border-radius: 10px;
+}
+.source_container::before {
+  content: "";
+  padding-bottom: 100%;
+  display: inline-block;
+  vertical-align: top;
+}
