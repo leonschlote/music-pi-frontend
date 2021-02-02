@@ -104,27 +104,25 @@ function makeid(length) {
 }
 
 try{
-	setup_shairport_reader()
 	enable_source(fs.readFileSync('/var/tmp/active_audio_source').toString())
 }catch(e){
 	enable_source('airplay')
+	console.log('done with airplay')
 	enable_source('radio1')
-	
-	setTimeout(()=>{
-		setup_shairport_reader()
-	}, 10000)
+	//setTimeout(()=>{enable_source('radio1')}, 2000)
 }
 
 // =========== Shairport update metadata ============
-function setup_shairport_reader(){
 	const ShairportReader = require('shairport-sync-reader')
 	var shairport_meta_path = '/var/tmp/shairport-sync-metadata'
+	fs.writeFileSync( shairport_meta_path, '' ) 
+	fs.chmodSync( shairport_meta_path, 0o777 )
 	var pipeReader = new ShairportReader({ path: shairport_meta_path })
+
 	var airplay_album_art = '';
 	airplay_meta_active = true
 	
 	pipeReader.on('meta', (data)=>{
-		console.log('Shairport Metadata')
 		if(data.asal != "" && data.asal != undefined)
 			available_sources['airplay'].info.title = data.asal
 		if(data.asar != "" && data.asar != undefined && data.minm != "" && data.minm != undefined)
@@ -134,7 +132,6 @@ function setup_shairport_reader(){
 	var last_img_id = ''
 	
 	pipeReader.on('PICT', (data)=>{
-		console.log('Shairport pict')
 	
 		try{
 			fs.unlinkSync('/var/tmp/www/static/img/airplay_album_art_' + last_img_id + '.png')
@@ -148,7 +145,8 @@ function setup_shairport_reader(){
 	
 		set_active_image('albumart/airplay_album_art_' + nocache + '.png')
 	})
-}
+
+
 // ============== Radio update metadata =================
 setInterval(()=>{
 	exec('mpc',(error, stdout, stderr)=>{
