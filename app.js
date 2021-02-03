@@ -84,6 +84,7 @@ function enable_source(id){
 
 		fs.writeFileSync('/var/tmp/active_audio_source', id);
 		console.log('file written')
+		if (id == 'airplay') setTimeout(()=>{setup_shairport_reader()}, 3000)
 	}
 }
 
@@ -104,24 +105,30 @@ function makeid(length) {
 }
 
 try{
-	setup_shairport_reader()
 	enable_source(fs.readFileSync('/var/tmp/active_audio_source').toString())
 }catch(e){
-	enable_source('airplay')
 	enable_source('radio1')
-	
-	setTimeout(()=>{
-		setup_shairport_reader()
-	}, 10000)
 }
 
 // =========== Shairport update metadata ============
+var sh_reader_running = false
 function setup_shairport_reader(){
 	const ShairportReader = require('shairport-sync-reader')
 	var shairport_meta_path = '/var/tmp/shairport-sync-metadata'
-	var pipeReader = new ShairportReader({ path: shairport_meta_path })
 	var airplay_album_art = '';
-	airplay_meta_active = true
+	var last_img_id = ''
+
+	console.log('Trying to setup airplay meta reader')
+	if (sh_reader_running) return;
+	console.log('airplay meta reader already running')
+	try{
+		var pipeReader = new ShairportReader({ path: shairport_meta_path })
+		
+		console.log('airplay meta reader was started')
+	}catch(e){
+		console.log('Error while trying to setup airplay meta reader')
+		return
+	}
 	
 	pipeReader.on('meta', (data)=>{
 		console.log('Shairport Metadata')
@@ -131,7 +138,6 @@ function setup_shairport_reader(){
 			available_sources['airplay'].info.detail = data.asar + ' - ' + data.minm
 	})
 	
-	var last_img_id = ''
 	
 	pipeReader.on('PICT', (data)=>{
 		console.log('Shairport pict')
@@ -148,6 +154,7 @@ function setup_shairport_reader(){
 	
 		set_active_image('albumart/airplay_album_art_' + nocache + '.png')
 	})
+	sh_reader_running = true
 }
 // ============== Radio update metadata =================
 setInterval(()=>{
@@ -157,6 +164,8 @@ setInterval(()=>{
 			available_sources[active_source].info.title = radio_info.substr(0,9)  
 			available_sources[active_source].info.detail = radio_info.substr(11)  
 		}else if(active_source == 'fritz'){
+			available_sources[active_source].info.detail = radio_info  
+		}else if(active_source == 'inforadio'){
 			available_sources[active_source].info.detail = radio_info  
 		}
 	})

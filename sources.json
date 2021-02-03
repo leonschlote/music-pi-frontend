@@ -9,6 +9,16 @@
 			"detail": ""
 		}
 	},
+	"inforadio":{
+		"name": "InfoRadio",
+		"service":"inforadio.service",
+		"image":"img/inforadio.png",
+		"info": {
+			"source_name": "Radio",
+			"title": "InfoRadio",
+			"detail": "Wir lieben das Warum."
+		}
+	},
 	"fritz":{
 		"name": "fritz",
 		"service":"fritz.service",
