@@ -42,8 +42,8 @@ app.get('/', (req, res)=>{
 
 
 app.post('/api/activesource/:sourceId', (req, res)=>{
-	return res.send('trying to enable ' + req.params.sourceId + ' audio source');
 	enable_source(req.params.sourceId)
+	return res.send('trying to enable ' + req.params.sourceId + ' audio source');
 })
 
 app.get('/api/activesource', (req, res)=>{

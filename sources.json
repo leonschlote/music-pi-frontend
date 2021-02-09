@@ -1,16 +1,16 @@
 {
 	"radio1":{
-		"name": "radioeins",
+		"name": "Radioeins",
 		"service":"radio1.service",
 		"image":"img/radio1.png",
 		"info": {
 			"source_name": "Radio",
 			"title": "Radioeins",
-			"detail": ""
+			"detail": "Nur für Erwachsene"
 		}
 	},
 	"inforadio":{
-		"name": "InfoRadio",
+		"name": "Inforadio",
 		"service":"inforadio.service",
 		"image":"img/inforadio.png",
 		"info": {
@@ -20,7 +20,7 @@
 		}
 	},
 	"fritz":{
-		"name": "fritz",
+		"name": "Fritz",
 		"service":"fritz.service",
 		"image":"img/fritz.png",
 		"info": {
