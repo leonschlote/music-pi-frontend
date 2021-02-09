@@ -44,6 +44,19 @@ app.get('*', (req, res)=>{
 	  res.redirect('/')
 })
 
+app.post('/api/activesource/:sourceId', (req, res)=>{
+	return res.send('trying to enable ' + req.params.userId + ' audio source');
+	enable_source(req.params.userId)
+})
+
+app.get('/api/activesource', (req, res)=>{
+	return res.send(active_source);
+})
+
+app.get('/api/sources', (req, res)=>{
+	  res.send(available_sources)
+})
+
 io.on('connection', (socket)=>{
 	socket.on('change_source', (id)=>{
 		enable_source(id)
