@@ -40,9 +40,6 @@ app.get('/', (req, res)=>{
 	  res.send(website)
 })
 
-app.get('*', (req, res)=>{
-	  res.redirect('/')
-})
 
 app.post('/api/activesource/:sourceId', (req, res)=>{
 	return res.send('trying to enable ' + req.params.sourceId + ' audio source');
@@ -55,6 +52,11 @@ app.get('/api/activesource', (req, res)=>{
 
 app.get('/api/sources', (req, res)=>{
 	  res.send(available_sources)
+})
+
+
+app.get('*', (req, res)=>{
+	  res.redirect('/')
 })
 
 io.on('connection', (socket)=>{
